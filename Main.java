@@ -74,7 +74,7 @@ public class Main {
                 { "Wyoming", "Cheyenne" }
         };
 
-        partOne(statesAndCapitals);
+        // partOne(statesAndCapitals);
         partTwo(statesAndCapitals);
     }
 
@@ -118,6 +118,11 @@ public class Main {
         String input = scanner.nextLine().toLowerCase().trim();
         scanner.close();
 
+        if (input == "") {
+            System.out.println(RED + "Capital not found for the state entered. \n" + RESET);
+            return;
+        }
+
         String state = Arrays.stream(input // Capitalize Input
                 .split(" "))
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
@@ -137,10 +142,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println(YELLOW + "\n**Answers are NOT case sensitive." + RESET);
-        for (String[] array : statesAndCapitals) {
-            System.out.print("\nEnter the capital of " + YELLOW + array[0] + RESET + ": ");
+        for (String[] row : statesAndCapitals) {
+            System.out.print("\nEnter the capital of " + YELLOW + row[0] + RESET + ": ");
             String answer = scanner.nextLine().toLowerCase().trim();
-            if (answer.matches(array[1].toLowerCase())) {
+            if (answer.matches(row[1].toLowerCase())) {
                 total = total + 1;
             }
         }
@@ -236,36 +241,39 @@ public class Main {
 
         System.out.println("[");
         for (String[] array : array2D) {
+            String state = array[0];
+            String capital = array[1];
+
             String stringOne = "\t" + "[ "
                     + STATE_COLOR
-                    + array[0]
+                    + state
                     + RESET
                     + "\t\t";
 
             String stringTwo = CAPITAL_COLOR
-                    + array[1]
+                    + capital
                     + RESET
                     + "\t]";
 
-            if (array[1].length() <= 7) {
+            if (capital.length() <= 7) {
                 stringTwo = CAPITAL_COLOR
-                        + array[1]
+                        + capital
                         + RESET
                         + "\t\t]";
             }
-            if (array[0].length() < 6) {
+            if (state.length() < 6) {
                 stringOne = "\t"
                         + "[ "
                         + STATE_COLOR
-                        + array[0]
+                        + state
                         + RESET
                         + "\t\t\t";
             }
-            if (array[0].length() > 13) {
+            if (state.length() > 13) {
                 stringOne = "\t"
                         + "[ "
                         + STATE_COLOR
-                        + array[0]
+                        + state
                         + RESET
                         + "\t";
             }
