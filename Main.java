@@ -1,10 +1,11 @@
-import java.security.DrbgParameters.Reseed;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
-// Add actual java comments
+// Computer Science 201 - Assignment 1: Array Sorting and Hashmaps
 
 public class Main {
 
@@ -20,7 +21,7 @@ public class Main {
     public static final String WHITE = "\u001B[37m";
 
     public static void main(String[] args) {
-        String[][] states_and_captials = {
+        String[][] statesAndCapitals = {
                 { "Alabama", "Montgomery" },
                 { "Alaska", "Juneau" },
                 { "Arizona", "Phoenix" },
@@ -73,42 +74,70 @@ public class Main {
                 { "Wyoming", "Cheyenne" }
         };
 
-        // partOne(states_and_captials);
-        partTwo(states_and_captials);
+        partOne(statesAndCapitals);
+        partTwo(statesAndCapitals);
     }
 
-    private static void partTwo(String[][] states_and_captials) {
+    // Part 1: Sorting Arrays
+    public static void partOne(String[][] statesAndCapitals) {
+        System.out.println("\n" + GREEN + "Initial array sorted by state: " + RESET);
+        prettyPrintArray2D(statesAndCapitals, false);
+
+        bubbleSort(statesAndCapitals);
+
+        System.out.println("\n" + GREEN + "Bubble sorted array by capital: " + RESET);
+        prettyPrintArray2D(statesAndCapitals, true);
+
+        testCapitals(statesAndCapitals);
+    }
+
+    // Part 2: Sorting & Searching HashMap
+    private static void partTwo(String[][] statesAndCapitals) {
         System.out.println("\n" + GREEN + "HashMap: " + RESET);
-        HashMap<String, String> hashMap = new HashMap<String, String>(states_and_captials.length);
-        for (String[] row : states_and_captials) {
+        HashMap<String, String> hashMap = new HashMap<String, String>(statesAndCapitals.length);
+        for (String[] row : statesAndCapitals) {
             hashMap.put(row[0], row[1]);
         }
-        prettyPrintHashMap(hashMap, false);
+        prettyPrintMap(hashMap, false);
 
-        System.out.println("\n" + GREEN + "TreeMap: " + RESET);
-        TreeMap<String, String> treeMap = new TreeMap<String, String>();
+        System.out.println("\n" + GREEN + "TreeMap sorted by key: " + RESET);
+        TreeMap<String, String> treeMap = new TreeMap<String, String>(); // "then use the TreeMap class to sort the map
+                                                                         // while using a binary search tree for
+                                                                         // storage"
         treeMap.putAll(hashMap);
-        prettyPrintHashMap(treeMap, false);
+        prettyPrintMap(treeMap, true);
+
+        findCaptial(treeMap);
     }
 
-    public static void partOne(String[][] states_and_captials) {
-        System.out.println("\n" + GREEN + "Initial Array: " + RESET);
-        prettyPrintArray2D(states_and_captials, false);
-
-        bubbleSort(states_and_captials);
-
-        System.out.println("\n" + GREEN + "Bubble Sorted Array: " + RESET);
-        prettyPrintArray2D(states_and_captials, true);
-
-        testCapitals(states_and_captials);
-    }
-
-    private static void printMatch(Map<String, String> map) {
+    // Find state and display capital
+    private static void findCaptial(Map<String, String> sortedMap) {
         Scanner scanner = new Scanner(System.in);
+        System.out.println(YELLOW + "\n**Input is NOT case sensitive." + RESET);
+        System.out.print("\nEnter a state: ");
+        String input = scanner.nextLine().toLowerCase().trim();
+        scanner.close();
+
+        String state = Arrays.stream(input // Capitalize Input
+                .split(" "))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
+
+        String capital = sortedMap.get(state);
+        if (capital != null) {
+            System.out.println("The capital of " + GREEN + state + RESET + " is " + GREEN + capital + RESET + "\n");
+        } else {
+            System.out.println(RED + "Capital not found for the state entered. \n" + RESET);
+        }
+    }
+
+    // Test user on all 50 capitals
+    private static void testCapitals(String[][] statesAndCapitals) {
         Integer total = 0;
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println(YELLOW + "\n**Answers are NOT case sensitive." + RESET);
-        for (String[] array : states_and_captials) {
+        for (String[] array : statesAndCapitals) {
             System.out.print("\nEnter the capital of " + YELLOW + array[0] + RESET + ": ");
             String answer = scanner.nextLine().toLowerCase().trim();
             if (answer.matches(array[1].toLowerCase())) {
@@ -120,19 +149,7 @@ public class Main {
         System.out.println("\nTotal correct answers: " + total + " / 50");
     }
 
-    private static void testCapitals(Map<String, String> map) {
-        Scanner scanner = new Scanner(System.in);
-        scanner.close();
-
-        System.out.println(YELLOW + "\n**Input is NOT case sensitive." + RESET);
-        System.out.print("\nEnter a state: ");
-        String state = scanner.nextLine().toLowerCase().trim();
-
-        // serach treemap binary tree storage
-
-        System.out.println("The capital of " + GREEN + state + RESET + " is " + GREEN + "capital_of_state" + RESET);
-    }
-
+    // BubbleSort 2D array of strings
     private static void bubbleSort(String[][] array2D) {
         int len = array2D.length;
         boolean swapped;
@@ -152,13 +169,14 @@ public class Main {
         } while (swapped); // Continue iterating and swapping until no more swaps are needed
     }
 
-    private static void prettyPrintHashMap(Map<String, String> map, boolean isSorted) {
-        String STATE_COLOR = GREEN;
+    // Pretty print map
+    private static void prettyPrintMap(Map<String, String> map, boolean isSorted) {
+        String STATE_COLOR = YELLOW;
         String CAPITAL_COLOR = YELLOW;
 
         if (isSorted) {
-            STATE_COLOR = YELLOW;
-            CAPITAL_COLOR = GREEN;
+            STATE_COLOR = GREEN;
+            CAPITAL_COLOR = YELLOW;
         }
 
         System.out.println("{");
@@ -184,7 +202,6 @@ public class Main {
                         + RESET
                         + "\t\t},";
             }
-
             if (state.length() < 6) {
                 stringOne = "\t"
                         + "{ "
@@ -207,6 +224,7 @@ public class Main {
         System.out.println("}");
     }
 
+    // Pretty print 2D array of strings
     private static void prettyPrintArray2D(String[][] array2D, boolean isSorted) {
         String STATE_COLOR = GREEN;
         String CAPITAL_COLOR = YELLOW;
@@ -218,8 +236,7 @@ public class Main {
 
         System.out.println("[");
         for (String[] array : array2D) {
-            String stringOne = "\t"
-                    + "[ "
+            String stringOne = "\t" + "[ "
                     + STATE_COLOR
                     + array[0]
                     + RESET
@@ -236,7 +253,6 @@ public class Main {
                         + RESET
                         + "\t\t]";
             }
-
             if (array[0].length() < 6) {
                 stringOne = "\t"
                         + "[ "
