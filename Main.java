@@ -101,6 +101,9 @@ public class Main {
             String answer = scanner.nextLine().toLowerCase().trim();
             if (answer.matches(row[1].toLowerCase())) {
                 total = total + 1;
+                System.out.println(GREEN + "Correct." + RESET);
+            } else {
+                System.out.println(RED + "Incorrect." + RESET);
             }
         }
 
@@ -134,7 +137,7 @@ public class Main {
         String input = scanner.nextLine().toLowerCase().trim();
 
         if (input.length() == 0) {
-            System.out.println(RED + "Capital not found for the state entered. \n" + RESET);
+            System.out.println(RED + "Capital not found. \n" + RESET);
             return;
         }
 
@@ -147,7 +150,7 @@ public class Main {
         if (capital != null) {
             System.out.println("The capital of " + GREEN + state + RESET + " is " + GREEN + capital + RESET + "\n");
         } else {
-            System.out.println(RED + "Capital not found for the state entered. \n" + RESET);
+            System.out.println(RED + "Capital not found. \n" + RESET);
         }
     }
 
